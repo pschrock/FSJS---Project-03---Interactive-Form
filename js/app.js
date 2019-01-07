@@ -47,3 +47,35 @@ $('#design').change(function() {
     });
   }
 });
+
+
+
+
+// ”Register for Activities” section
+// - Some events are at the same day and time as others. If the user selects a
+//   workshop, don't allow selection of a workshop at the same day and time --
+//   you should disable the checkbox and visually indicate that the workshop in
+//   the competing time slot isn't available.
+// - When a user unchecks an activity, make sure that competing activities (if
+//   there are any) are no longer disabled.
+
+const activitiesLabel = $('.activities label');
+const activitiesInput = $('.activities input');
+console.log(activitiesLabel);
+
+activitiesInput.change(function() {
+  activitiesInput.each(function() {
+    if($(this).prop('checked')) {
+      const label = $(this).parent().text();
+      // activitiesLabel.each(function() {
+      //   if($(this).text() === '')
+      // })
+      console.log(label);
+    }
+  })
+});
+
+// - As a user selects activities, a running total should display below the list
+//   of checkboxes. For example, if the user selects "Main Conference", then
+//   Total: $200 should appear. If they add 1 workshop, the total should change
+//   to Total: $300.
