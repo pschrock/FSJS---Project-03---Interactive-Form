@@ -24,20 +24,20 @@ $('#name').focus();
 //   drop down menu is updated.
 
 $('#design').change(function() {
-  let designSelection = $(this).val();
-  if(designSelection === 'js puns') {
+  let $designSelection = $(this).val();
+  if($designSelection === 'js puns') {
     $('#color option').each(function() {
       $(this).attr('disabled', false);
-      let value = $(this).val();
-      if(value !== 'cornflowerblue' && value !== 'darkslategrey' && value !== 'gold') {
+      let $value = $(this).val();
+      if($value !== 'cornflowerblue' && $value !== 'darkslategrey' && $value !== 'gold') {
         $(this).attr('disabled', 'disabled');
       }
     });
-  }else if(designSelection === 'heart js'){
+  }else if($designSelection === 'heart js'){
     $('#color option').each(function() {
       $(this).attr('disabled', false);
-      let value = $(this).val();
-      if(value !== 'tomato' && value !== 'steelblue' && value !== 'dimgrey') {
+      let $value = $(this).val();
+      if($value !== 'tomato' && $value !== 'steelblue' && $value !== 'dimgrey') {
         $(this).attr('disabled', 'disabled');
       }
     });
@@ -59,20 +59,26 @@ $('#design').change(function() {
 // - When a user unchecks an activity, make sure that competing activities (if
 //   there are any) are no longer disabled.
 
-const activitiesLabel = $('.activities label');
-const activitiesInput = $('.activities input');
-console.log(activitiesLabel);
-
-activitiesInput.change(function() {
-  activitiesInput.each(function() {
-    if($(this).prop('checked')) {
-      const label = $(this).parent().text();
-      // activitiesLabel.each(function() {
-      //   if($(this).text() === '')
-      // })
-      console.log(label);
+const $activitiesInput = $('.activities input').slice(1,5);
+function checker(input, boolean) {
+  let $timeSlot = input.parent().text().split('-');
+  $timeSlot = $timeSlot[1].split(',');
+  $activitiesInput.each(function() {
+    if(!$(this).prop('checked')) {
+      let $label = $(this).parent().text();
+      if($label.indexOf($timeSlot) > 0) {
+        $(this).attr('disabled', boolean);
+      }
     }
   })
+}
+
+$activitiesInput.click(function() {
+  if($(this).prop('checked')) {
+    checker($(this), true);
+  }else{
+    checker($(this), false);
+  }
 });
 
 // - As a user selects activities, a running total should display below the list
