@@ -57,7 +57,7 @@ $('#design').change(function() {
 //   there are any) are no longer disabled.
 
 const $activitiesInput = $('.activities input').slice(1,5);
-function checker(input, boolean) {
+function checker(input, boolean, font) {
   let $timeSlot = input.parent().text().split('-');
   $timeSlot = $timeSlot[1].split(',');
   $activitiesInput.each(function() {
@@ -65,6 +65,7 @@ function checker(input, boolean) {
       let $label = $(this).parent().text();
       if($label.indexOf($timeSlot) > 0) {
         $(this).attr('disabled', boolean);
+        $(this).parent().css('color', font);
       }
     }
   })
@@ -72,9 +73,9 @@ function checker(input, boolean) {
 
 $activitiesInput.click(function() {
   if($(this).prop('checked')) {
-    checker($(this), true);
+    checker($(this), true, '#7f7f7f');
   }else{
-    checker($(this), false);
+    checker($(this), false, '#000');
   }
 });
 
