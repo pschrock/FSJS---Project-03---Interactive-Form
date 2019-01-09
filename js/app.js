@@ -1,27 +1,11 @@
 // ”Job Role” section
-
-// - Include a text field that will be revealed when the "Other" option is selected
-//   from the "Job Role" drop down menu.
-// - Give the field an id of “other-title,” and add the placeholder text of
-//   "Your Job Role".
-// Note: You'll need to add the "Other" job role input directly into the HTML and
-// hide it initially with JS in order to get this feature to work when JS is
-// disabled, which is a requirement below.
-
+// create focus on first input for Name
 $('#name').focus();
 
 
 
 
 // ”T-Shirt Info” section
-// - For the T-Shirt "Color" menu, only display the color options that match the
-//   design selected in the "Design" menu.
-//   - If the user selects "Theme - JS Puns" then the color menu should only
-//     display "Cornflower Blue," "Dark Slate Grey," and "Gold."
-//   - If the user selects "Theme - I ♥ JS" then the color menu should only display
-//     "Tomato," "Steel Blue," and "Dim Grey."
-// - When a new theme is selected from the "Design" menu, the "Color" field and
-//   drop down menu is updated.
 function colors(one, two, three) {
   $('#color option').each(function() {
     $(this).attr('disabled', false);
@@ -32,6 +16,7 @@ function colors(one, two, three) {
   });
 };
 
+// when T-shirt design is selected, evaluate what color options are available
 $('#design').change(function() {
   let $designSelection = $(this).val();
   if($designSelection === 'js puns') {
@@ -49,18 +34,16 @@ $('#design').change(function() {
 
 
 // ”Register for Activities” section
-// - Some events are at the same day and time as others. If the user selects a
-//   workshop, don't allow selection of a workshop at the same day and time --
-//   you should disable the checkbox and visually indicate that the workshop in
-//   the competing time slot isn't available.
-// - When a user unchecks an activity, make sure that competing activities (if
-//   there are any) are no longer disabled.
-
-const $activitiesInput = $('.activities input').slice(1,5);
+// Used ".slice" to select the portion of the list of "input" relevant to
+// overlaping time slots
+const $activitieConflict = $('.activities input').slice(1,5);
 function checker(input, boolean, font) {
+  // selecting the portion of the text relevant for evaluation
   let $timeSlot = input.parent().text().split('-');
   $timeSlot = $timeSlot[1].split(',');
-  $activitiesInput.each(function() {
+
+  // evaluate each option of group
+  $activitieConflict.each(function() {
     if(!$(this).prop('checked')) {
       let $label = $(this).parent().text();
       if($label.indexOf($timeSlot) > 0) {
@@ -71,10 +54,12 @@ function checker(input, boolean, font) {
   })
 }
 
-$activitiesInput.click(function() {
+$activitieConflict.click(function() {
   if($(this).prop('checked')) {
+    // disable options if a selection overlaps another selection with same day and time
     checker($(this), true, '#7f7f7f');
   }else{
+    // enables all disabled options when option is deselected.
     checker($(this), false, '#000');
   }
 });
@@ -83,3 +68,16 @@ $activitiesInput.click(function() {
 //   of checkboxes. For example, if the user selects "Main Conference", then
 //   Total: $200 should appear. If they add 1 workshop, the total should change
 //   to Total: $300.
+
+const $activitieInput = $('.activities input');
+let runningTotal = 0;
+$activitieInput.click(function() {
+  let $activitieCost = $(this).parent().text().split('$');
+  if($(this).prop('checked')) {
+    runningTotal += Number.parseInt($activitieCost[1], 10);
+  }else{
+    runningTotal -= Number.parseInt($activitieCost[1], 10);
+  }
+  $('.activities').append('<h2>Total: $' + runningTotal + '</h2>');
+})
+// selecting the portion of the text relevant for evaluation
