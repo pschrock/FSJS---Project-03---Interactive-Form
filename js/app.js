@@ -22,25 +22,22 @@ $('#name').focus();
 //     "Tomato," "Steel Blue," and "Dim Grey."
 // - When a new theme is selected from the "Design" menu, the "Color" field and
 //   drop down menu is updated.
+function colors(one, two, three) {
+  $('#color option').each(function() {
+    $(this).attr('disabled', false);
+    let $value = $(this).val();
+    if($value !== one && $value !== two && $value !== three) {
+      $(this).attr('disabled', 'disabled');
+    }
+  });
+};
 
 $('#design').change(function() {
   let $designSelection = $(this).val();
   if($designSelection === 'js puns') {
-    $('#color option').each(function() {
-      $(this).attr('disabled', false);
-      let $value = $(this).val();
-      if($value !== 'cornflowerblue' && $value !== 'darkslategrey' && $value !== 'gold') {
-        $(this).attr('disabled', 'disabled');
-      }
-    });
+    colors('cornflowerblue', 'darkslategrey', 'gold');
   }else if($designSelection === 'heart js'){
-    $('#color option').each(function() {
-      $(this).attr('disabled', false);
-      let $value = $(this).val();
-      if($value !== 'tomato' && $value !== 'steelblue' && $value !== 'dimgrey') {
-        $(this).attr('disabled', 'disabled');
-      }
-    });
+    colors('tomato', 'steelblue', 'dimgrey');
   }else{
     $('#color option').each(function() {
       $(this).attr('disabled', false);
