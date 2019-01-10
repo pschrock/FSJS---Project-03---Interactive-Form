@@ -95,3 +95,34 @@ $activitieInput.click(function() {
 
 })
 // selecting the portion of the text relevant for evaluation
+
+// "Payment Info" section
+// Display payment sections based on the payment option chosen in the select menu.
+// - The "Credit Card" payment option should be selected by default. Display the
+//   #credit-card div, and hide the "PayPal" and "Bitcoin" information. Payment
+//   option in the select menu should match the payment option displayed on the
+//   page.
+// - When a user selects the "PayPal" payment option, the PayPal information
+//   should display, and the credit card and “Bitcoin” information should be
+//   hidden.
+// - When a user selects the "Bitcoin" payment option, the Bitcoin information
+//   should display, and the credit card and “PayPal” information should be hidden.
+// NOTE: The user should not be able to select the "Select Payment Method" option
+// from the payment select menu, because the user should not be able to submit
+// the form without a chosen payment option.
+
+$('#credit-card ~ div').css('display', 'none');
+$('#payment').change(function() {
+  let $paymentOption = $('#payment').val();
+  $('#payment option:first-of-type').attr('disabled', 'disabled');
+  if($paymentOption === 'paypal') {
+    $('#payment ~ div').css('display', 'none');
+    $('#credit-card + div').css('display', 'block');
+  }else if($paymentOption === 'bitcoin') {
+    $('#payment ~ div').css('display', 'none');
+    $('#credit-card + div + div').css('display', 'block');
+  }else{
+    $('#payment ~ div').css('display', 'none');
+    $('#credit-card').css('display', 'block');
+  }
+})
