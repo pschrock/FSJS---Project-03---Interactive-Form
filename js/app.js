@@ -71,13 +71,27 @@ $activitieConflict.click(function() {
 
 const $activitieInput = $('.activities input');
 let runningTotal = 0;
+function addOrSubtract(selection, cost) {
+  if(selection.prop('checked')) {
+    runningTotal += Number.parseInt(cost, 10);
+  }else{
+    runningTotal -= Number.parseInt(cost, 10);
+  }
+}
+
 $activitieInput.click(function() {
   let $activitieCost = $(this).parent().text().split('$');
-  if($(this).prop('checked')) {
-    runningTotal += Number.parseInt($activitieCost[1], 10);
+  if(runningTotal === 0) {
+    addOrSubtract($(this), $activitieCost[1]);
+    $('.activities').append('<h2>Total: $' + runningTotal + '</h2>');
   }else{
-    runningTotal -= Number.parseInt($activitieCost[1], 10);
+    addOrSubtract($(this), $activitieCost[1]);
+    if(runningTotal === 0) {
+      $('.activities h2').remove();
+    }else{
+      $('.activities h2').html('Total: $' + runningTotal);
+    }
   }
-  $('.activities').append('<h2>Total: $' + runningTotal + '</h2>');
+
 })
 // selecting the portion of the text relevant for evaluation
