@@ -92,9 +92,12 @@ $activitieInput.click(function() {
       $('.activities h2').html('Total: $' + runningTotal);
     }
   }
-
 })
 // selecting the portion of the text relevant for evaluation
+
+
+
+
 
 // "Payment Info" section
 // Display payment sections based on the payment option chosen in the select menu.
@@ -124,5 +127,89 @@ $('#payment').change(function() {
   }else{
     $('#payment ~ div').css('display', 'none');
     $('#credit-card').css('display', 'block');
+  }
+})
+
+
+
+
+
+// Form validation
+// If any of the following validation errors exist, prevent the user from
+// submitting the form:
+// - Name: field can't be blank.
+// - Email: field must be a validly formatted e-mail address (you don't have to
+//   check that it's a real e-mail address, just that it's formatted like one:
+//   dave@teamtreehouse.com for example.
+// - User: must select at least one checkbox under the "Register for Activities"
+//   section of the form.
+// - If the selected payment option is "Credit Card," make sure the user has
+//   supplied a Credit Card number, a Zip Code, and a 3 number CVV value before
+//   the form can be submitted.
+//   - Credit Card field should only accept a number between 13 and 16 digits.
+//   - The Zip Code field should accept a 5-digit number.
+//   - The CVV should only accept a number that is exactly 3 digits long.
+
+// NOTE: Don't rely on the built in HTML5 validation by adding the required
+// attribute to your DOM elements. You need to actually create your own custom
+// validation checks and error messages.
+
+// NOTE: Avoid using snippets or plugins for this project. To get the most out
+// of the experience, you should be writing all of your own code for your own
+// custom validation.
+
+// NOTE: Make sure your validation is only validating Credit Card info if Credit
+// Card is the selected payment method.
+
+$('#name').change(function() {
+  const $name = $(this).val();
+  const nameValidate = /^[A-Z][a-z]+ [A-Z][a-z]+$/.test($name);
+  if(nameValidate) {
+    $(this).css('border', '2px solid #c1deeb');
+  }else{
+    $(this).css('border', '2px solid red');
+  }
+})
+
+$('#mail').change(function() {
+  const $email = $(this).val();
+  const emailValidate = /^.+@.+\..+$/.test($email);
+  if(emailValidate) {
+    $(this).css('border', '2px solid #c1deeb');
+  }else{
+    $(this).css('border', '2px solid red');
+  }
+})
+
+const userCourseSelection = '';
+
+$('#cc-num').change(function() {
+  const $ccNumber = $(this).val();
+  const ccValidate = /^\d{13}[0-9]?[0-9]?[0-9]?$/.test($ccNumber);
+  if(ccValidate) {
+    $(this).css('border', '2px solid #c1deeb');
+  }else{
+    $(this).css('border', '2px solid red');
+  }
+})
+
+$('#zip').change(function() {
+  const $zip = $(this).val();
+  const zipValidate = /^\d{5}$/.test($zip);
+  if(zipValidate) {
+    $(this).css('border', '2px solid #c1deeb');
+  }else{
+    $(this).css('border', '2px solid red');
+  }
+})
+
+const cvv = /^\d{3}[0-9]?$/;
+$('#cvv').change(function() {
+  const $cvv = $(this).val();
+  const cvvValidate = /^\d{3}[0-9]?$/.test($cvv);
+  if(cvvValidate) {
+    $(this).css('border', '2px solid #c1deeb');
+  }else{
+    $(this).css('border', '2px solid red');
   }
 })
