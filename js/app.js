@@ -69,7 +69,7 @@ $activitieConflict.click(function() {
 //   Total: $200 should appear. If they add 1 workshop, the total should change
 //   to Total: $300.
 
-const $activitieInput = $('.activities input');
+const $activityInput = $('.activities input');
 let runningTotal = 0;
 function addOrSubtract(selection, cost) {
   if(selection.prop('checked')) {
@@ -79,7 +79,7 @@ function addOrSubtract(selection, cost) {
   }
 }
 
-$activitieInput.click(function() {
+$activityInput.click(function() {
   let $activitieCost = $(this).parent().text().split('$');
   if(runningTotal === 0) {
     addOrSubtract($(this), $activitieCost[1]);
@@ -161,55 +161,53 @@ $('#payment').change(function() {
 // NOTE: Make sure your validation is only validating Credit Card info if Credit
 // Card is the selected payment method.
 
-$('#name').change(function() {
-  const $name = $(this).val();
-  const nameValidate = /^[A-Z][a-z]+ [A-Z][a-z]+$/.test($name);
-  if(nameValidate) {
-    $(this).css('border', '2px solid #c1deeb');
-  }else{
-    $(this).css('border', '2px solid red');
-  }
-})
 
-$('#mail').change(function() {
-  const $email = $(this).val();
-  const emailValidate = /^.+@.+\..+$/.test($email);
-  if(emailValidate) {
-    $(this).css('border', '2px solid #c1deeb');
-  }else{
-    $(this).css('border', '2px solid red');
-  }
-})
 
-const userCourseSelection = '';
-
-$('#cc-num').change(function() {
-  const $ccNumber = $(this).val();
-  const ccValidate = /^\d{13}[0-9]?[0-9]?[0-9]?$/.test($ccNumber);
-  if(ccValidate) {
-    $(this).css('border', '2px solid #c1deeb');
-  }else{
-    $(this).css('border', '2px solid red');
+$('button').click(function(e) {
+  e.preventDefault();
+  let validated = true;
+  function validator(element, regex) {
+    const $value = element.val();
+    const regexTest = regex.test($value);
+    if(regexTest) {
+      element.css('border', '2px solid #c1deeb');
+      element.prev().css('color', '#000');
+      validated = validated && true;
+    }else{
+      element.css('border', '2px solid #ff0000');
+      element.prev().css('color', '#ff0000');
+      validated = validated && false;
+    }
   }
-})
+  // Registration First and Last name (Capital Letter followed by multiple lowercase letter, a space, Capital
+  // letter followed by multiple lowecase letters - First Last)
+  validator($('#name'), /^[A-Z][a-z]+ [A-Z][a-z]+$/);
+  // email userinfo + @ + host + . + top-level domain
+  validator($('#mail'), /^.+@.+\..+$/);
+  // credit card (13-16 digits)
+  validator($('#cc-num'), /^\d{13}[0-9]?[0-9]?[0-9]?$/);
+  // zip code (5 digits)
+  validator($('#zip'), /^\d{5}$/);
+  // cvv verification (3-4 digits)
+  validator($('#cvv'), /^\d{3}[0-9]?$/);
 
-$('#zip').change(function() {
-  const $zip = $(this).val();
-  const zipValidate = /^\d{5}$/.test($zip);
-  if(zipValidate) {
-    $(this).css('border', '2px solid #c1deeb');
+  let totalChecked = 0;
+  $activityInput.each(function() {
+    if($(this).prop('checked')) {
+      totalChecked += 1;
+    }
+  })
+  
+  if(totalChecked > 0) {
+    $('.activities legend').css('color', 'inherit');
+    validated = validated && true;
   }else{
-    $(this).css('border', '2px solid red');
+    $('.activities legend').css('color', '#ff0000');
+    validated = validated && false;
   }
-})
+  console.log(totalChecked);
 
-const cvv = /^\d{3}[0-9]?$/;
-$('#cvv').change(function() {
-  const $cvv = $(this).val();
-  const cvvValidate = /^\d{3}[0-9]?$/.test($cvv);
-  if(cvvValidate) {
-    $(this).css('border', '2px solid #c1deeb');
-  }else{
-    $(this).css('border', '2px solid red');
+  if(validated) {
+    window.location.reload();
   }
-})
+});
