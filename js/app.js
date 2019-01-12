@@ -133,40 +133,25 @@ $('#payment').change(function() {
 
 
 
-
-// Form validation
-// If any of the following validation errors exist, prevent the user from
-// submitting the form:
-// - Name: field can't be blank.
-// - Email: field must be a validly formatted e-mail address (you don't have to
-//   check that it's a real e-mail address, just that it's formatted like one:
-//   dave@teamtreehouse.com for example.
-// - User: must select at least one checkbox under the "Register for Activities"
-//   section of the form.
-// - If the selected payment option is "Credit Card," make sure the user has
-//   supplied a Credit Card number, a Zip Code, and a 3 number CVV value before
-//   the form can be submitted.
-//   - Credit Card field should only accept a number between 13 and 16 digits.
-//   - The Zip Code field should accept a 5-digit number.
-//   - The CVV should only accept a number that is exactly 3 digits long.
-
-// NOTE: Don't rely on the built in HTML5 validation by adding the required
-// attribute to your DOM elements. You need to actually create your own custom
-// validation checks and error messages.
-
-// NOTE: Avoid using snippets or plugins for this project. To get the most out
-// of the experience, you should be writing all of your own code for your own
-// custom validation.
-
-// NOTE: Make sure your validation is only validating Credit Card info if Credit
-// Card is the selected payment method.
-
-
-
 $('button').click(function(e) {
   e.preventDefault();
   let validated = true;
-  function validator(element, regex) {
+  const regexObject = {
+    name: /^[A-Z][a-z]+ [A-Z][a-z]+$/,
+    email: /^.+@.+\..+$/,
+    ccnum: /^\d{13}[0-9]?[0-9]?[0-9]?$/,
+    zip: /^\d{5}$/,
+    cvv: /^\d{3}[0-9]?$/
+  };
+  const errorMessageObject = {
+    name: "Please put in your name, first and last with the first letter being capitalized",
+    email: "Please put in a valid email address",
+    ccnum: "Please put a Credit Card number ranging from 13-16 digits",
+    zip: "Please put a zip code in the formatt of 5 digits",
+    cvv: "Please put a CVV number"
+  };
+
+  function validator(element, regex, errorMessage) {
     const $value = element.val();
     const regexTest = regex.test($value);
     if(regexTest) {
@@ -176,20 +161,39 @@ $('button').click(function(e) {
     }else{
       element.css('border', '2px solid #ff0000');
       element.prev().css('color', '#ff0000');
+      element.hover(
+        function() {
+          $(this).parent().css('position', 'relative');
+          $(this).after(`
+            <div style="position: absolute;
+                        z-index: 10;
+                        background: #000;
+                        border: 2px solid #ff0000;
+                        bottom: 50px;
+                        width: 100%;">
+              <p style="color: #ff0000;
+                        text-align: center;
+                        padding: 5px;">${errorMessage}</p>
+            </div>
+          `);
+        },
+        function(){
+          $(this).parent().find('div:last').remove();
+        })
       validated = validated && false;
     }
   }
   // Registration First and Last name (Capital Letter followed by multiple lowercase letter, a space, Capital
   // letter followed by multiple lowecase letters - First Last)
-  validator($('#name'), /^[A-Z][a-z]+ [A-Z][a-z]+$/);
+  validator($('#name'), regexObject.name, errorMessageObject.name);
   // email userinfo + @ + host + . + top-level domain
-  validator($('#mail'), /^.+@.+\..+$/);
+  validator($('#mail'), regexObject.email, errorMessageObject.email);
   // credit card (13-16 digits)
-  validator($('#cc-num'), /^\d{13}[0-9]?[0-9]?[0-9]?$/);
+  validator($('#cc-num'), regexObject.ccnum, errorMessageObject.ccnum);
   // zip code (5 digits)
-  validator($('#zip'), /^\d{5}$/);
+  validator($('#zip'), regexObject.zip, errorMessageObject.zip);
   // cvv verification (3-4 digits)
-  validator($('#cvv'), /^\d{3}[0-9]?$/);
+  validator($('#cvv'), regexObject.cvv, errorMessageObject.cvv);
 
   let totalChecked = 0;
   $activityInput.each(function() {
@@ -197,7 +201,7 @@ $('button').click(function(e) {
       totalChecked += 1;
     }
   })
-  
+
   if(totalChecked > 0) {
     $('.activities legend').css('color', 'inherit');
     validated = validated && true;
@@ -205,7 +209,6 @@ $('button').click(function(e) {
     $('.activities legend').css('color', '#ff0000');
     validated = validated && false;
   }
-  console.log(totalChecked);
 
   if(validated) {
     window.location.reload();
