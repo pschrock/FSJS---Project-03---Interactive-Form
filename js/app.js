@@ -17,6 +17,7 @@ function colors(one, two, three) {
 };
 
 // when T-shirt design is selected, evaluate what color options are available
+$('#colors-js-puns').css('display', 'none');
 $('#design').change(function() {
   let $designSelection = $(this).val();
   if($designSelection === 'js puns') {
@@ -28,6 +29,7 @@ $('#design').change(function() {
       $(this).attr('disabled', false);
     });
   }
+  $('#colors-js-puns').css('display', 'inline-block');
 });
 
 
@@ -143,15 +145,8 @@ $('button').click(function(e) {
     zip: /^\d{5}$/,
     cvv: /^\d{3}[0-9]?$/
   };
-  const errorMessageObject = {
-    name: "Please put in your name, first and last with the first letter being capitalized",
-    email: "Please put in a valid email address",
-    ccnum: "Please put a Credit Card number ranging from 13-16 digits",
-    zip: "Please put a zip code in the formatt of 5 digits",
-    cvv: "Please put a CVV number"
-  };
 
-  function validator(element, regex, errorMessage) {
+  function validator(element, regex) {
     const $value = element.val();
     const regexTest = regex.test($value);
     if(regexTest) {
@@ -161,39 +156,32 @@ $('button').click(function(e) {
     }else{
       element.css('border', '2px solid #ff0000');
       element.prev().css('color', '#ff0000');
-      element.hover(
-        function() {
-          $(this).parent().css('position', 'relative');
-          $(this).after(`
-            <div style="position: absolute;
-                        z-index: 10;
-                        background: #000;
-                        border: 2px solid #ff0000;
-                        bottom: 50px;
-                        width: 100%;">
-              <p style="color: #ff0000;
-                        text-align: center;
-                        padding: 5px;">${errorMessage}</p>
-            </div>
-          `);
-        },
-        function(){
-          $(this).parent().find('div:last').remove();
-        })
       validated = validated && false;
     }
   }
   // Registration First and Last name (Capital Letter followed by multiple lowercase letter, a space, Capital
   // letter followed by multiple lowecase letters - First Last)
-  validator($('#name'), regexObject.name, errorMessageObject.name);
+  validator($('#name'), regexObject.name);
   // email userinfo + @ + host + . + top-level domain
-  validator($('#mail'), regexObject.email, errorMessageObject.email);
-  // credit card (13-16 digits)
-  validator($('#cc-num'), regexObject.ccnum, errorMessageObject.ccnum);
-  // zip code (5 digits)
-  validator($('#zip'), regexObject.zip, errorMessageObject.zip);
-  // cvv verification (3-4 digits)
-  validator($('#cvv'), regexObject.cvv, errorMessageObject.cvv);
+  validator($('#mail'), regexObject.email);
+
+
+  let $payment = $('#payment').val();
+  console.log($payment);
+  if($payment === 'credit card') {
+    $('#payment').prev().css('color', '#000');
+    // credit card (13-16 digits)
+    validator($('#cc-num'), regexObject.ccnum);
+    // zip code (5 digits)
+    validator($('#zip'), regexObject.zip);
+    // cvv verification (3-4 digits)
+    validator($('#cvv'), regexObject.cvv);
+    console.log('ok');
+  }else if($payment === 'select_method') {
+    $('#payment').prev().css('color', '#ff0000');
+  }else{
+    $('#payment').prev().css('color', '#000');
+  }
 
   let totalChecked = 0;
   $activityInput.each(function() {
