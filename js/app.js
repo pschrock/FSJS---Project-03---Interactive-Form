@@ -141,12 +141,19 @@ $('button').click(function(e) {
   const regexObject = {
     name: /^[A-Z][a-z]+ [A-Z][a-z]+$/,
     email: /^.+@.+\..+$/,
-    ccnum: /^\d{13}[0-9]?[0-9]?[0-9]?$/,
+    ccnum: /^\d{4}-?\d{4}-?\d{2}-?\d{2}-?[0-9][0-9]?[0-9]?[0-9]?$/,
     zip: /^\d{5}$/,
     cvv: /^\d{3}[0-9]?$/
   };
+  const errorMessageObject = {
+    name: "First Last",
+    email: "name@email.com",
+    ccnum: "13-16 digits",
+    zip: "5 digit zip code",
+    cvv: "CVV number"
+  }
 
-  function validator(element, regex) {
+  function validator(element, regex, messageWidth, errorMessage) {
     const $value = element.val();
     const regexTest = regex.test($value);
     if(regexTest) {
@@ -156,27 +163,64 @@ $('button').click(function(e) {
     }else{
       element.css('border', '2px solid #ff0000');
       element.prev().css('color', '#ff0000');
+      element.hover(
+        function() {
+          $(this).parent().css('position', 'relative');
+          $(this).after(`
+            <div style='position: absolute;
+              z-index: 10;
+              background: #323232;
+              border: 2px solid #ff0000;
+              width: ${messageWidth};'>
+              <span style='position: absolute;
+                bottom: 100%;
+                left: 10px;
+                display: inline-block;
+                width: 0;
+                height: 0;
+                border-bottom: 18px solid #ff0000;
+                border-right: 18px solid transparent;
+                border-left: 18px solid transparent;'></span>
+              <span style='position: absolute;
+                bottom: calc(100% - 4px);
+                left: 10px;
+                display: inline-block;
+                width: 0;
+                height: 0;
+                border-bottom: 18px solid #323232;
+                border-right: 18px solid transparent;
+                border-left: 18px solid transparent;'></span>
+              <p style='color: #ff0000;
+                text-align: center;
+                padding: 5px;'>
+                ${errorMessage}
+              </p>
+            </div>
+          `);
+        },
+        function() {
+          $(this).parent().find('div:last').remove();
+        }
+      )
       validated = validated && false;
     }
   }
   // Registration First and Last name (Capital Letter followed by multiple lowercase letter, a space, Capital
   // letter followed by multiple lowecase letters - First Last)
-  validator($('#name'), regexObject.name);
+  validator($('#name'), regexObject.name, '25%', errorMessageObject.name);
   // email userinfo + @ + host + . + top-level domain
-  validator($('#mail'), regexObject.email);
+  validator($('#mail'), regexObject.email, '35%', errorMessageObject.email);
 
 
   let $payment = $('#payment').val();
-  console.log($payment);
   if($payment === 'credit card') {
     $('#payment').prev().css('color', '#000');
     // credit card (13-16 digits)
-    validator($('#cc-num'), regexObject.ccnum);
+    validator($('#cc-num'), regexObject.ccnum, '65%', errorMessageObject.ccnum);
     // zip code (5 digits)
-    validator($('#zip'), regexObject.zip);
+    validator($('#zip'), regexObject.zip, '100%', errorMessageObject.zip);
     // cvv verification (3-4 digits)
-    validator($('#cvv'), regexObject.cvv);
-    console.log('ok');
+    validator($('#cvv'), regexObject.cvv, '100%', errorMessageObject.cvv);
   }else if($payment === 'select_method') {
     $('#payment').prev().css('color', '#ff0000');
   }else{
